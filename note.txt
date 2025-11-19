@@ -1,0 +1,395 @@
+Modal Window Visibility Test: Write a Cypress test to verify the behavior of a modal window: • Visit the page. • Check that the modal window is not visible by default. • Click the button that opens the modal window. • Verify that the modal window becomes visible after clicking the button. o Website: https://demoqa.com/modal-dialogs
+
+Here is a clean and correct Cypress test for verifying the modal window visibility on
+https://demoqa.com/modal-dialogs.
+________________________________________
+✅ Cypress Test: Modal Window Visibility
+describe('Modal Window Visibility Test', () => {
+  it('should verify modal visibility behavior', () => {
+    // Visit the page
+    cy.visit('https://demoqa.com/modal-dialogs');
+
+    // Ensure modal is not visible by default
+    cy.get('#example-modal-sizes-title-lg').should('not.exist');
+
+    // Click the button that opens the modal window
+    cy.contains('button', 'Large modal').click();
+
+    // Verify the modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg')
+      .should('be.visible')
+      .and('contain', 'Large Modal');
+  });
+});
+________________________________________
+📝 Notes
+•	The modal on DemoQA is not rendered in the DOM until opened, so we use
+should('not.exist') instead of should('not.be.visible').
+•	.modal-content is the main modal container.
+•	The test clicks Large modal, but you can change to Small modal if needed.
+________________________________________
+If you’d like, I can provide:
+✅ Test for the Small Modal
+✅ Page Object Model version
+✅ TypeScript version
+You said:
+This are the two modals <button id="showSmallModal" type="button" class="mr-4 mt-2 btn btn-primary" xpath="1">Small modal</button> <button id="showLargeModal" type="button" class="mt-2 btn btn-primary" xpath="1">Large modal</button> 
+ChatGPT said:
+Great — since you provided the exact modal trigger buttons, here is an updated Cypress test that checks:
+•	No modal is visible by default
+•	Click Small Modal → modal becomes visible
+•	Close it
+•	Click Large Modal → modal becomes visible
+This gives full coverage for both buttons.
+________________________________________
+✅ Updated Cypress Test for Both Modals
+describe('Modal Window Visibility Test', () => {
+
+  beforeEach(() => {
+    cy.visit('https://demoqa.com/modal-dialogs');
+  });
+
+  it('verifies the Small Modal behavior', () => {
+    // Ensure modal is not visible by default
+    cy.get('.modal-content').should('not.exist');
+
+    // Open Small Modal
+    cy.get('#showSmallModal').click();
+
+    // Check that modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-sm')
+      .should('be.visible')
+      .and('contain', 'Small Modal');
+
+    // Close Small Modal
+    cy.get('#closeSmallModal').click();
+
+    // Verify modal is closed
+    cy.get('.modal-content').should('not.exist');
+  });
+
+  it('verifies the Large Modal behavior', () => {
+    // Ensure modal is not visible by default
+    cy.get('.modal-content').should('not.exist');
+
+    // Open Large Modal
+    cy.get('#showLargeModal').click();
+
+    // Check that modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg')
+      .should('be.visible')
+      .and('contain', 'Large Modal');
+
+    // Close Large Modal
+    cy.get('#closeLargeModal').click();
+
+    // Verify modal is closed
+    cy.get('.modal-content').should('not.exist');
+  });
+
+});
+________________________________________
+📝 Notes
+Modal element IDs used:
+•	Small Modal Button: #showSmallModal
+•	Large Modal Button: #showLargeModal
+•	Small Modal Title: #example-modal-sizes-title-sm
+•	Large Modal Title: #example-modal-sizes-title-lg
+•	Close Buttons:
+o	Small: #closeSmallModal
+o	Large: #closeLargeModal
+________________________________________
+If you'd like, I can also:
+✅ Combine both tests into one
+✅ Add assertions for modal body text
+✅ Convert to Page Object Model (POM)
+Just tell me!
+You said:
+Error The following error originated from your application code, not from Cypress. > Script error. Cypress detected that an uncaught error was thrown from a cross origin script. We cannot provide you the stack trace, line number, or file where this error occurred. Check your Developer Tools Console for the actual error - it should be printed there. It's possible to enable debugging these scripts by adding the crossorigin attribute and setting a CORS header. When Cypress detects uncaught errors originating from your application it will automatically fail the current test. This behavior is configurable, and you can choose to turn this off by listening to the uncaught:exception event. Because this error occurred during a before each hook we are skipping the remaining tests in the current suite: Modal Window Visibility TestLearn moreLearn more View stack trace
+ChatGPT said:
+You're getting the "Script error" / Cross-origin error from DemoQA, which is a known issue with Cypress on this specific site.
+Good news:
+This is not your test’s fault—DemoQA loads external scripts that throw cross-origin errors, and Cypress automatically fails the test unless we explicitly tell it to ignore them.
+________________________________________
+✅ Fix: Add uncaught:exception handler
+Add this to your test file OR to cypress/support/e2e.js:
+Cypress.on('uncaught:exception', () => {
+  // returning false prevents Cypress from failing the test
+  return false;
+});
+This tells Cypress:
+➡️ “Ignore errors coming from the app (DemoQA). They are not part of my test.”
+________________________________________
+✅ Updated Full Working Test (with patch)
+describe('Modal Window Visibility Test', () => {
+
+  // Ignore cross-origin script errors thrown by DemoQA
+  Cypress.on('uncaught:exception', () => false);
+
+  beforeEach(() => {
+    cy.visit('https://demoqa.com/modal-dialogs');
+  });
+
+  it('verifies the Small Modal behavior', () => {
+    cy.get('.modal-content').should('not.exist');
+    cy.get('#showSmallModal').click();
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-sm').should('contain', 'Small Modal');
+    cy.get('#closeSmallModal').click();
+    cy.get('.modal-content').should('not.exist');
+  });
+
+  it('verifies the Large Modal behavior', () => {
+    cy.get('.modal-content').should('not.exist');
+    cy.get('#showLargeModal').click();Modal Window Visibility Test: Write a Cypress test to verify the behavior of a modal window: • Visit the page. • Check that the modal window is not visible by default. • Click the button that opens the modal window. • Verify that the modal window becomes visible after clicking the button. o Website: https://demoqa.com/modal-dialogs
+ChatGPT said:
+Here is a clean and correct Cypress test for verifying the modal window visibility on
+https://demoqa.com/modal-dialogs.
+________________________________________
+✅ Cypress Test: Modal Window Visibility
+describe('Modal Window Visibility Test', () => {
+  it('should verify modal visibility behavior', () => {
+    // Visit the page
+    cy.visit('https://demoqa.com/modal-dialogs');
+
+    // Ensure modal is not visible by default
+    cy.get('#example-modal-sizes-title-lg').should('not.exist');
+
+    // Click the button that opens the modal window
+    cy.contains('button', 'Large modal').click();
+
+    // Verify the modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg')
+      .should('be.visible')
+      .and('contain', 'Large Modal');
+  });
+});
+________________________________________
+📝 Notes
+•	The modal on DemoQA is not rendered in the DOM until opened, so we use
+should('not.exist') instead of should('not.be.visible').
+•	.modal-content is the main modal container.
+•	The test clicks Large modal, but you can change to Small modal if needed.
+________________________________________
+If you’d like, I can provide:
+✅ Test for the Small Modal
+✅ Page Object Model version
+✅ TypeScript version
+You said:
+This are the two modals <button id="showSmallModal" type="button" class="mr-4 mt-2 btn btn-primary" xpath="1">Small modal</button> <button id="showLargeModal" type="button" class="mt-2 btn btn-primary" xpath="1">Large modal</button> 
+ChatGPT said:
+Great — since you provided the exact modal trigger buttons, here is an updated Cypress test that checks:
+•	No modal is visible by default
+•	Click Small Modal → modal becomes visible
+•	Close it
+•	Click Large Modal → modal becomes visible
+This gives full coverage for both buttons.
+________________________________________
+✅ Updated Cypress Test for Both Modals
+describe('Modal Window Visibility Test', () => {
+
+  beforeEach(() => {
+    cy.visit('https://demoqa.com/modal-dialogs');
+  });
+
+  it('verifies the Small Modal behavior', () => {
+    // Ensure modal is not visible by default
+    cy.get('.modal-content').should('not.exist');
+
+    // Open Small Modal
+    cy.get('#showSmallModal').click();
+
+    // Check that modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-sm')
+      .should('be.visible')
+      .and('contain', 'Small Modal');
+
+    // Close Small Modal
+    cy.get('#closeSmallModal').click();
+
+    // Verify modal is closed
+    cy.get('.modal-content').should('not.exist');
+  });
+
+  it('verifies the Large Modal behavior', () => {
+    // Ensure modal is not visible by default
+    cy.get('.modal-content').should('not.exist');
+
+    // Open Large Modal
+    cy.get('#showLargeModal').click();
+
+    // Check that modal becomes visible
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg')
+      .should('be.visible')
+      .and('contain', 'Large Modal');
+
+    // Close Large Modal
+    cy.get('#closeLargeModal').click();
+
+    // Verify modal is closed
+    cy.get('.modal-content').should('not.exist');
+  });
+
+});
+________________________________________
+📝 Notes
+Modal element IDs used:
+•	Small Modal Button: #showSmallModal
+•	Large Modal Button: #showLargeModal
+•	Small Modal Title: #example-modal-sizes-title-sm
+•	Large Modal Title: #example-modal-sizes-title-lg
+•	Close Buttons:
+o	Small: #closeSmallModal
+o	Large: #closeLargeModal
+________________________________________
+If you'd like, I can also:
+✅ Combine both tests into one
+✅ Add assertions for modal body text
+✅ Convert to Page Object Model (POM)
+Just tell me!
+You said:
+Error The following error originated from your application code, not from Cypress. > Script error. Cypress detected that an uncaught error was thrown from a cross origin script. We cannot provide you the stack trace, line number, or file where this error occurred. Check your Developer Tools Console for the actual error - it should be printed there. It's possible to enable debugging these scripts by adding the crossorigin attribute and setting a CORS header. When Cypress detects uncaught errors originating from your application it will automatically fail the current test. This behavior is configurable, and you can choose to turn this off by listening to the uncaught:exception event. Because this error occurred during a before each hook we are skipping the remaining tests in the current suite: Modal Window Visibility TestLearn moreLearn more View stack trace
+ChatGPT said:
+You're getting the "Script error" / Cross-origin error from DemoQA, which is a known issue with Cypress on this specific site.
+Good news:
+This is not your test’s fault—DemoQA loads external scripts that throw cross-origin errors, and Cypress automatically fails the test unless we explicitly tell it to ignore them.
+________________________________________
+✅ Fix: Add uncaught:exception handler
+Add this to your test file OR to cypress/support/e2e.js:
+Cypress.on('uncaught:exception', () => {
+  // returning false prevents Cypress from failing the test
+  return false;
+});
+This tells Cypress:
+➡️ “Ignore errors coming from the app (DemoQA). They are not part of my test.”
+________________________________________
+✅ Updated Full Working Test (with patch)
+describe('Modal Window Visibility Test', () => {
+
+  // Ignore cross-origin script errors thrown by DemoQA
+  Cypress.on('uncaught:exception', () => false);
+
+  beforeEach(() => {
+    cy.visit('https://demoqa.com/modal-dialogs');
+  });
+
+  it('verifies the Small Modal behavior', () => {
+    cy.get('.modal-content').should('not.exist');
+    cy.get('#showSmallModal').click();
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-sm').should('contain', 'Small Modal');
+    cy.get('#closeSmallModal').click();
+    cy.get('.modal-content').should('not.exist');
+  });
+
+  it('verifies the Large Modal behavior', () => {
+    cy.get('.modal-content').should('not.exist');
+    cy.get('#showLargeModal').click();
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg').should('contain', 'Large Modal');
+    cy.get('#closeLargeModal').click();
+    cy.get('.modal-content').should('not.exist');
+  });
+
+});
+________________________________________
+Why This Fix Is Needed
+DemoQA loads scripts from:
+•	cdn.jsdelivr.net
+•	googleapis.com
+•	googletagmanager.com
+Cypress treats any errors from these scripts as test failures, even though you don't control that code.
+By catching the uncaught:exception event, Cypress continues with the test normally.
+________________________________________
+If you want, I can also provide:
+✔ Only ignore DemoQA domain errors
+✔ A cleaner global exception handler
+✔ A retry-safe modal test
+Just let me know!
+
+
+    cy.get('.modal-content').should('be.visible');
+    cy.get('#example-modal-sizes-title-lg').should('contain', 'Large Modal');
+    cy.get('#closeLargeModal').click();
+    cy.get('.modal-content').should('not.exist');
+  });
+
+});
+________________________________________
+Why This Fix Is Needed
+DemoQA loads scripts from:
+•	cdn.jsdelivr.net
+•	googleapis.com
+•	googletagmanager.com
+Cypress treats any errors from these scripts as test failures, even though you don't control that code.
+By catching the uncaught:exception event, Cypress continues with the test normally.
+________________________________________
+If you want, I can also provide:
+✔ Only ignore DemoQA domain errors
+✔ A cleaner global exception handler
+✔ A retry-safe modal test
+Just let me know!
+
+
+
+Page Object Model (POM) – Summary
+*********************************
+
+Page Object Model (POM) is a design pattern used in test automation to make tests cleaner, reusable, and easier to maintain.
+
+⭐ What POM Does:
+
+Separates test steps from page element locators
+
+Keeps all page-related logic in a single place
+
+Makes your test code more readable and organized
+
+🧱 How POM Works
+
+You create a Page Object file (example: modalPage.js)
+This file contains:
+
+locators
+
+reusable functions
+
+actions for the page
+
+Your test file (example: modalTest.cy.js) only uses those functions.
+
+🎯 Why POM Is Useful
+
+Easier to maintain (change locators in ONE file)
+
+Cleaner test code (tests only contain high-level steps)
+
+Allows reusability (same page functions reused across many tests)
+
+Reduces duplicate code
+
+📌 Example:
+Page Object:
+modalPage.largeModalButton()
+
+Test:
+modalPage.largeModalButton().click();
+
+
+The test does not need to know the locator #showLargeModal — it’s stored inside the POM.
+
+🧠 In short:
+
+POM is a neat way to organize your test automation code so your tests stay clean, readable, and easy to update.
+
+If you want, I can also summarize:
+
+✔ Benefits of POM
+✔ When to use POM
+✔ POM vs non-POM examples

@@ -1,0 +1,114 @@
+Step-by-step explanation
+Step 0: Describe the test
+describe('Checkbox Enable/Disable Test for All 3', () => {
+    .............
+})
+
+
+describe() groups your test cases.
+
+Helps organize tests in Cypress reports.
+
+Step 1: Define the test case
+it('Should disable, enable, and select all checkboxes', () => {
+    ...............
+})
+
+
+it() defines a single test scenario.
+
+The string describes what the test does.
+
+The arrow function contains the test steps.
+
+Step 2: Visit the page
+cy.visit("https://rahulshettyacademy.com/AutomationPractice/");
+
+
+Opens the website in Cypress browser.
+
+All subsequent commands run on this page.
+
+Step 3: Grab all checkboxes and give them an alias
+cy.get("input[type='checkbox']").as('checkboxes');
+
+
+cy.get("input[type='checkbox']") selects all checkboxes on the page.
+
+.as('checkboxes') gives it an alias, so we can reference it multiple times with cy.get('@checkboxes').
+
+Step 4: Force disable all checkboxes
+cy.get('@checkboxes').each(($el) => {
+    cy.wrap($el).invoke('attr', 'disabled', true);
+});
+
+
+.each() loops over each checkbox.
+
+$el is the DOM element of the checkbox.
+
+cy.wrap($el) wraps it so Cypress commands work.
+
+.invoke('attr', 'disabled', true) sets the disabled attribute to true, making the checkbox disabled.
+
+This step simulates a "checkbox disabled by default" scenario, because the actual page has all checkboxes enabled.
+
+Step 5: Verify all checkboxes are disabled
+cy.get('@checkboxes').each(($el) => {
+    cy.wrap($el).should('be.disabled');
+});
+
+
+Again loops over all checkboxes.
+
+.should('be.disabled') asserts the checkbox cannot be clicked.
+
+Cypress retries automatically until the condition is true or times out.
+
+Step 6: Enable all checkboxes
+cy.get('@checkboxes').each(($el) => {
+    cy.wrap($el).invoke('removeAttr', 'disabled');
+});
+
+
+.removeAttr('disabled') removes the disabled attribute.
+
+Makes the checkbox clickable.
+
+Simulates a user enabling the checkbox through a control or toggle.
+
+Step 7: Verify all checkboxes are enabled
+cy.get('@checkboxes').each(($el) => {
+    cy.wrap($el).should('not.be.disabled');
+});
+
+
+.should('not.be.disabled') confirms that each checkbox can now be clicked.
+
+Step 8: Check all checkboxes
+cy.get('@checkboxes').each(($el) => {
+    cy.wrap($el).check().should('be.checked');
+});
+
+
+.check() selects the checkbox.
+
+.should('be.checked') verifies it is actually selected.
+
+✅ Summary of the workflow
+
+Visit page.
+
+Select all checkboxes.
+
+Disable all checkboxes.
+
+Assert disabled.
+
+Enable all checkboxes.
+
+Assert enabled.
+
+Select (check) all checkboxes.
+
+Assert checked.
