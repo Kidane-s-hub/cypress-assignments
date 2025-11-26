@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Table with Buttons and Checkboxes</title>
+<style>
+    table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #888;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    button {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<table>
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td><input type="checkbox" class="row-check"></td>
+            <td>Alice</td>
+            <td>Active</td>
+            <td><button onclick="alert('Viewing Alice')">View</button></td>
+        </tr>
+
+        <tr>
+            <td><input type="checkbox" class="row-check"></td>
+            <td>Bob</td>
+            <td>Inactive</td>
+            <td><button onclick="alert('Viewing Bob')">View</button></td>
+        </tr>
+
+        <tr>
+            <td><input type="checkbox" class="row-check"></td>
+            <td>Charlie</td>
+            <td>Active</td>
+            <td><button onclick="alert('Viewing Charlie')">View</button></td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
