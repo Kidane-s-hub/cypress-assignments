@@ -1,5 +1,4 @@
 // This example includes:
-
 // Clicking each alert button
 // Capturing & asserting the alert text
 // Accepting / dismissing confirmation alerts
