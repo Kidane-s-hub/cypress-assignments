@@ -60,8 +60,7 @@ class LoginPage {
   // Method to verify successful login (by checking navbar elements)
   verifyLoginSuccess() {
     // Check if navbar logo is present
-    this.navbarLogo.should("be.visible");
-
+  demomwe
     // Check that key menu items are present in the navbar
     this.demosMenu.should("be.visible");
     this.toolsMenu.should("be.visible");

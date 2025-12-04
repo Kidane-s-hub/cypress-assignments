@@ -1,4 +1,4 @@
-import LoginPage from "../../pageObjects/LoginPage";
+import LoginPage from "../../support/pageObjects/LoginPage";
 
 describe("Login Test using POM", () => {
   const loginPage = new LoginPage();
