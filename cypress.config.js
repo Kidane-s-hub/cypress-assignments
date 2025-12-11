@@ -84,59 +84,44 @@ module.exports = defineConfig({
 
       // Question 5: Read/Write using ExcelJS
       on("task", {
-        // ------------------------------------------
-        // Q5: READ Excel (ExcelJS)
-        // ------------------------------------------
-        readQ5Excel() {
+        readQ5LoginExcel() {
           const workbook = new ExcelJS.Workbook();
-          return workbook.xlsx
-            .readFile("cypress/fixtures/data/q5-testData.xlsx")
-            .then(() => {
-              const sheet = workbook.getWorksheet("Sheet1");
-              const data = [];
-              sheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return;
-                data.push({
-                  username: row.getCell(1).value,
-                  password: row.getCell(2).value,
-                  rowNumber,
-                });
+          const filePath = path.resolve(
+            "cypress/fixtures/data/q5-loginData.xlsx"
+          );
+
+          return workbook.xlsx.readFile(filePath).then(() => {
+            const sheet = workbook.getWorksheet("Sheet1");
+            const data = [];
+            sheet.eachRow((row, rowNumber) => {
+              if (rowNumber === 1) return; // skip header
+              data.push({
+                username: row.getCell(1).value,
+                password: row.getCell(2).value,
+                rowNumber, // needed for updating
               });
-              return data;
             });
+            return data;
+          });
         },
 
-        // ------------------------------------------
-        // Q5: WRITE test result (ExcelJS)
-        // ------------------------------------------
-        writeQ5Excel({ rowNumber, result }) {
+        // -------------------------------
+        // Q5: Write login test result
+        // -------------------------------
+        writeQ5LoginExcel({ rowNumber, result }) {
           const filePath = path.resolve(
-            "cypress/fixtures/data/q5-testData.xlsx"
+            "cypress/fixtures/data/q5-loginData.xlsx"
           );
           const workbook = new ExcelJS.Workbook();
 
           return workbook.xlsx.readFile(filePath).then(() => {
             const sheet = workbook.getWorksheet("Sheet1");
-            sheet.getRow(rowNumber).getCell(3).value = result;
+            sheet.getRow(rowNumber).getCell(3).value = result; // Status column
             return workbook.xlsx.writeFile(filePath).then(() => null);
           });
         },
-
-        // ------------------------------------------
-        // EMPLOYEE: Write Employee Data (xlsx)
-        // ------------------------------------------
-        writeEmployeeExcel({ filePath, data }) {
-          const absolute = path.resolve(filePath);
-          const workbook = xlsx.utils.book_new();
-          const ws = xlsx.utils.json_to_sheet(data);
-          xlsx.utils.book_append_sheet(workbook, ws, "EmployeeDetails");
-
-          xlsx.writeFile(workbook, absolute);
-
-          return { success: true, path: absolute };
-        },
       });
-
+      
       // Question 7: Filter and read employees
       on("task", {
         // Filter employees by department and save to a new sheet

@@ -1,20 +1,14 @@
-describe("Write Employee Data to Excel", () => {
-  it("Saves employee data into employeeData.xlsx", () => {
-    const employeeData = [
-      { EmployeeID: 101, Name: "Alice", Department: "HR", Salary: 60000 },
-      { EmployeeID: 102, Name: "Bob", Department: "IT", Salary: 75000 },
-      {
-        EmployeeID: 103,
-        Name: "Charlie",
-        Department: "Finance",
-        Salary: 65000,
-      },
-    ];
-
-    const filePath = "cypress/fixtures/data/employeeData.xlsx";
-
-    cy.writeEmployeeData(filePath, employeeData).then((result) => {
-      cy.log("Excel created at: " + result.path);
+describe("Q5: Login Tests from Excel", () => {
+  it("Reads Q5 Excel, performs login, and updates status", () => {
+    // Step 1: Read Excel rows
+    cy.readQ5Excel().then((rows) => {
+      // Step 2: Loop through each row
+      rows.forEach((row) => {
+        cy.loginQ5Row(row).then((status) => {
+          // Step 3: Write test result back to Excel
+          cy.writeQ5LoginResult(row.rowNumber, status);
+        });
+      });
     });
   });
 });

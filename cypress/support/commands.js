@@ -42,19 +42,35 @@ Cypress.Commands.add("loadMultipleSheetData", (filePath) => {
 
 // Question 5
 // Q5 - Read the login data
-Cypress.Commands.add("readExcelData", () => {
-  return cy.task("readQ5Excel");
+// Q5 - Read Excel data
+Cypress.Commands.add("readQ5Excel", () => {
+  return cy.task("readQ5LoginExcel");
 });
 
-// Q5 - Write back test results
-Cypress.Commands.add("writeQ5Result", (rowNumber, result) => {
-  return cy.task("writeQ5Excel", { rowNumber, result });
+// Q5 - Write test result
+Cypress.Commands.add("writeQ5LoginResult", (rowNumber, result) => {
+  return cy.task("writeQ5LoginExcel", { rowNumber, result });
 });
 
-// EMPLOYEE - Write employee records
-Cypress.Commands.add("writeEmployeeData", (filePath, data) => {
-  return cy.task("writeEmployeeExcel", { filePath, data });
+// Q5 - Perform login for a row
+Cypress.Commands.add("loginQ5Row", (row) => {
+  cy.visit("https://evangadi.com/login");
+
+  cy.get("input[name='username'], input[type='email']").type(row.username, { log: false });
+  cy.get("input[name='password']").type(row.password, { log: false });
+  cy.get("button[type='submit']").click();
+
+  return cy.get("body").then(($body) => {
+    if ($body.find(".dashboard, .user-profile").length > 0) {
+      return "PASSED";
+    } else if ($body.find(".error, .alert-danger").length > 0) {
+      return "FAILED";
+    } else {
+      return "UNKNOWN";
+    }
+  });
 });
+
 
 
 // Question 7 
